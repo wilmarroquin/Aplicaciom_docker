@@ -73,8 +73,14 @@ function findZoneName(zoneId) {
 async function apiFetch(path, options = {}) {
     let response;
 
+    const url = path.startsWith('http')
+        ? path
+        : `${API_URL}${path}`;
+
+    console.log('Consultando API:', url);
+
     try {
-        response = await fetch(path, {
+        response = await fetch(url, {
             ...options,
             headers: {
                 'Content-Type': 'application/json',
@@ -82,7 +88,7 @@ async function apiFetch(path, options = {}) {
             }
         });
     } catch {
-        throw new Error('No se pudo conectar con la API. Verifica que el contenedor api esté en ejecución.');
+        throw new Error('No se pudo conectar con la API. Verifica que el backend esté disponible en Render.');
     }
 
     if (!response.ok) {
