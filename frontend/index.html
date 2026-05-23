@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RouteBite Delivery Manager</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+    <main id="appView" class="layout">
+        <section id="appStatusPanel" class="status-panel wide" hidden>
+            <p id="appStatus"></p>
+        </section>
+
+        <section class="panel">
+            <div class="toolbar">
+                <h2>Clientes</h2>
+                <button id="loadCustomers">Actualizar</button>
+            </div>
+            <form id="customerForm" class="inline-form">
+                <input id="customerName" placeholder="Nombre completo" required minlength="2" maxlength="120">
+                <input id="customerPhone" placeholder="Teléfono" required minlength="7" maxlength="30">
+                <input id="customerEmail" type="email" placeholder="Correo opcional">
+                <input id="customerNotes" placeholder="Notas opcionales">
+                <button type="submit">Guardar cliente</button>
+            </form>
+            <ul id="customerList"></ul>
+        </section>
+
+        <section class="panel wide">
+            <div class="toolbar">
+                <h2>Direcciones de entrega</h2>
+                <button id="loadAddresses">Actualizar</button>
+            </div>
+            <form id="addressForm" class="address-form">
+                <select id="addressCustomer" required>
+                    <option value="">Cliente</option>
+                </select>
+                <select id="addressZone" required>
+                    <option value="">Zona</option>
+                </select>
+                <input id="streetAddress" placeholder="Dirección" required minlength="5" maxlength="220">
+                <input id="referenceNote" placeholder="Referencia opcional">
+                <input id="latitude" type="number" step="0.000001" min="-90" max="90" placeholder="Latitud" required>
+                <input id="longitude" type="number" step="0.000001" min="-180" max="180" placeholder="Longitud" required>
+                <label class="checkbox-row">
+                    <input id="isDefaultAddress" type="checkbox">
+                    Dirección principal
+                </label>
+                <div class="form-actions">
+                    <button id="addressSubmit" type="submit">Guardar dirección</button>
+                    <button id="cancelAddressEdit" class="secondary-button" type="button" hidden>Cancelar</button>
+                </div>
+            </form>
+            <ul id="addressList"></ul>
+        </section>
+
+        <section class="panel wide">
+            <div class="toolbar">
+                <h2>Mapa de ubicaciones</h2>
+                <button id="fitMap">Ver todas</button>
+            </div>
+            <div id="map"></div>
+            <p id="mapStatus"></p>
+        </section>
+
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="scripts/app.js?v=20260428-4"></script>
+</body>
+</html>

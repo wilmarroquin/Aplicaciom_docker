@@ -1,0 +1,65 @@
+services:
+  database:
+    image: postgis/postgis:15-3.4
+    container_name: routebite_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DELIVERY_DB_NAME}
+      POSTGRES_USER: ${DELIVERY_DB_USER}
+      POSTGRES_PASSWORD: ${DELIVERY_DB_PASSWORD}
+    volumes:
+      - routebite_postgres_data:/var/lib/postgresql/data
+      - ./database/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/001_initial_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - routebite_network
+
+  api:
+    build: ./backend
+    container_name: routebite_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:%s/api/health' % os.getenv('PORT', '8000'), timeout=3).read()\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./backend/app:/app/app
+    networks:
+      - routebite_network
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: routebite_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - routebite_network
+
+volumes:
+  routebite_postgres_data:
+
+networks:
+  routebite_network:
+    driver: bridge

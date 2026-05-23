@@ -1,0 +1,18 @@
+# Entorno y secretos
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Logs
+*.log
+logs/
+
+# Sistemas/editores
+.DS_Store
+.vscode/
+.idea/
