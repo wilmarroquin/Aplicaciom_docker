@@ -1,3 +1,5 @@
+const API_URL = 'https://aplicaciom-docker.onrender.com';
+
 let customersCache = [];
 let zonesCache = [];
 let editingAddressId = null;
@@ -245,7 +247,7 @@ function renderAddresses(addresses) {
 }
 
 async function loadCustomers() {
-    customersCache = await apiFetch('/api/customers');
+    customersCache = await apiFetch('/api/customers')   ;
     renderCustomers(customersCache);
 }
 
