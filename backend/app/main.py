@@ -15,14 +15,27 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-if settings.allowed_origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.allowed_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+allowed_origins = settings.allowed_origins
+
+if isinstance(allowed_origins, str):
+    allowed_origins = [
+        origin.strip()
+        for origin in allowed_origins.split(",")
+        if origin.strip()
+    ]
+
+if not allowed_origins:
+    allowed_origins = [
+        "https://aplicacion-docker-frontend.onrender.com"
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
